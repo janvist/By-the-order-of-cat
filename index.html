@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>By Order of the Cat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="stage"></div>
+
+  <!-- In-world labels -->
+  <div id="labels">
+    <div class="world-label cat" id="label-cat">You</div>
+    <div class="world-label dog" id="label-dog">Bruno</div>
+    <div class="emote" id="emote"></div>
+    <div class="prompt" id="prompt"></div>
+  </div>
+
+  <!-- Level HUD -->
+  <div id="hud">
+    <div class="hud-top">
+      <div class="round-name" id="hud-title">Decree 1 · The Golden Seat</div>
+      <div class="objective" id="hud-goal"></div>
+    </div>
+    <div class="belief-card">
+      <div class="belief-head"><span>🐶 Bruno's belief</span><b id="belief-num">10%</b></div>
+      <div class="belief-bar"><div class="belief-fill" id="belief-fill"></div><div class="belief-goal">👑</div></div>
+      <div class="belief-delta" id="belief-delta"></div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-label">Conversations left</div>
+      <div class="audiences" id="audiences"></div>
+    </div>
+    <div class="inventory" id="inventory"></div>
+    <div class="keys-hint">
+      <kbd>WASD</kbd>/<kbd>←↑→↓</kbd> move · <kbd>Space</kbd> jump · <kbd>E</kbd> interact / talk · <kbd>Esc</kbd> pause
+    </div>
+  </div>
+
+  <div class="subtitle" id="subtitle" aria-live="polite"></div>
+  <button class="mute" id="btn-mute" aria-label="Toggle sound">🔊</button>
+
+  <!-- Talk panel -->
+  <div class="talk" id="talk">
+    <div class="talk-head">
+      <div class="talk-portrait">🐶</div>
+      <div class="talk-line"><span class="talk-name">Bruno</span><span id="talk-dog"></span></div>
+    </div>
+    <div class="talk-you" id="talk-you"></div>
+    <div class="talk-choices" id="talk-choices"></div>
+    <div class="talk-foot" id="talk-foot"></div>
+  </div>
+
+  <!-- Title -->
+  <div class="overlay show" id="title">
+    <div class="panel title-panel">
+      <div class="crown-mark">👑</div>
+      <h1>By Order of the Cat</h1>
+      <p class="tag">The human has left. You, a cat of great ambition, must convince Bruno, a loyal and very literal golden retriever, that you are now in charge.</p>
+      <button class="btn primary" id="btn-play">Enter the Royal Court</button>
+      <button class="btn" id="btn-how">How to play</button>
+      <p class="fine">Single player · keyboard · progress saves automatically</p>
+    </div>
+  </div>
+
+  <!-- How to play -->
+  <div class="overlay" id="how">
+    <div class="panel">
+      <h2>How to play</h2>
+      <ol class="how">
+        <li><b>Explore the room.</b> Walk with <kbd>WASD</kbd> or arrows, jump with <kbd>Space</kbd>. Glowing rings mark things you can use with <kbd>E</kbd>.</li>
+        <li><b>Find leverage.</b> Notes, a crown, Bruno's ball… each thing you find <b>unlocks new lines</b> to say.</li>
+        <li><b>Talk to Bruno.</b> Walk up and press <kbd>E</kbd>. Pick one line per conversation. Good lines raise his <b>belief</b>; rude ones backfire.</li>
+        <li><b>Reach 100% belief</b> before you run out of conversations and Bruno obeys your decree.</li>
+        <li><b>Grow your kingdom.</b> Earn Authority 👑 to buy Royal Court upgrades. Your treasury keeps earning while you're away.</li>
+      </ol>
+      <button class="btn primary" id="btn-how-back">Got it</button>
+    </div>
+  </div>
+
+  <!-- Royal Court (hub) -->
+  <div class="overlay" id="court">
+    <div class="panel court-panel">
+      <div class="court-head">
+        <div>
+          <p class="eyebrow">The Royal Court</p>
+          <h2>Your Kingdom</h2>
+        </div>
+        <div class="authority"><span>👑</span><b id="authority">0</b><small>Authority</small></div>
+      </div>
+
+      <div class="court-grid">
+        <section>
+          <h3>Decrees</h3>
+          <div id="decree-list" class="decree-list"></div>
+          <h3>Royal regalia</h3>
+          <div id="regalia" class="regalia"></div>
+        </section>
+        <section>
+          <h3>Treasury</h3>
+          <div class="treasury">
+            <div><b id="treasury-amt">0.0</b> 👑 waiting<br><small id="treasury-rate">0 👑 / hour</small></div>
+            <button class="btn small" id="btn-collect">Collect</button>
+          </div>
+          <h3>Upgrades</h3>
+          <div id="upgrade-list" class="upgrade-list"></div>
+        </section>
+      </div>
+      <div class="court-foot">
+        <button class="btn ghost" id="btn-court-title">← Title</button>
+        <button class="btn ghost" id="btn-reset">Reset progress</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level intro -->
+  <div class="overlay" id="intro">
+    <div class="panel">
+      <p class="eyebrow" id="intro-num">Decree 1</p>
+      <h2 id="intro-title"></h2>
+      <p class="objective-big" id="intro-goal"></p>
+      <div class="intro-stats" id="intro-stats"></div>
+      <p class="fine">Explore first. Talk when you have something good to say.</p>
+      <button class="btn primary" id="btn-intro-go">Begin</button>
+      <button class="btn ghost" id="btn-intro-back">Back to court</button>
+    </div>
+  </div>
+
+  <!-- Pause -->
+  <div class="overlay" id="pause">
+    <div class="panel">
+      <h2>Paused</h2>
+      <button class="btn primary" id="btn-resume">Resume</button>
+      <button class="btn" id="btn-restart">Restart decree</button>
+      <button class="btn" id="btn-quit">Back to court</button>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="overlay" id="result">
+    <div class="panel">
+      <p class="eyebrow" id="res-eyebrow"></p>
+      <h2 id="res-title"></h2>
+      <div class="stars" id="res-stars"></div>
+      <p class="points" id="res-points"></p>
+      <div class="joke" id="res-extra"></div>
+      <button class="btn primary" id="btn-res-court">Back to court</button>
+      <button class="btn" id="btn-res-again">Try again</button>
+    </div>
+  </div>
+
+  <div class="notice" id="small-screen">Best on a laptop or desktop with a keyboard.</div>
+  <div class="notice block" id="no-webgl">Your browser doesn't support WebGL 2, which this game needs. Try the latest Chrome, Edge, Firefox or Safari.</div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
